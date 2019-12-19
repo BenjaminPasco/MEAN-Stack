@@ -13,8 +13,9 @@ export class PostsService {
   getPosts() {
     // return [...this.posts]; // this create a new array with the elements of posts, it is doing a true copy of posts
     this.http.get<{message: string, posts: Post[]}>('http://localhost:3000/api/posts')
-      .subscribe(() => {
-
+      .subscribe((postData) => {
+        this.posts = postData.posts;
+        this.postsUpdated.next([...this.posts]);
       });
   }
 
@@ -23,7 +24,13 @@ export class PostsService {
   }
 
   addPost(title: string, content: string) {
-    const post: Post = {id: null, title: title, content: content };
+    const post: Post = {id: null, title, content };
+    this.http.post<{message: string}>('http://localhost:3000/api/posts', post)
+      .subscribe((responseData) => {
+        console.log(responseData.message);
+        this.posts.push(post);
+        this.postsUpdated.next([...this.posts]);
+      });
     this.posts.push(post);
     this.postsUpdated.next([...this.posts]);
   }
