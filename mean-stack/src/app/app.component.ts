@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Post } from './posts/post.model';
+import { AuthService } from './auth/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -8,6 +9,12 @@ import { Post } from './posts/post.model';
 })
 export class AppComponent {
   storedposts: Post[] = [];
+
+  constructor(private authService: AuthService) {}
+
+  ngOnInit() {
+    this.authService.autoAuthUser();
+  }
 
   onPostAdded(post) {
     this.storedposts.push(post);
